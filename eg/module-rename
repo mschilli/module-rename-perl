@@ -1,0 +1,68 @@
+#!/usr/bin/perl
+###########################################
+# module-rename -- 2005, Mike Schilli <cpan@perlmeister.com>
+###########################################
+# PURPOSE
+###########################################
+use strict;
+use warnings;
+use Pod::Usage;
+use Module::Rename;
+use Log::Log4perl qw(:easy);
+
+Log::Log4perl->easy_init({
+  level  => $DEBUG,
+  layout => "%m%n",
+});
+
+my  $VERSION    = "0.01";
+our $CVSVERSION = '$Revision: 1.1 $';
+
+my($old, $new, $dir) = @ARGV;
+
+pod2usage "Missing arguments" unless defined $new;
+
+my $ren = Module::Rename->new(
+    name_old => $old,
+    name_new => $new,
+);
+
+$ren->find_and_rename($dir || ".");
+
+__END__
+
+=head1 NAME
+
+    module-rename - Rename Perl module distributions
+
+=head1 SYNOPSIS
+
+    module-rename Module::Name::Old Module::Name::New
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<-v>
+
+Verbose mode.
+
+=back
+
+=head1 DESCRIPTION
+
+module-rename blah blah blah.
+
+=head1 EXAMPLES
+
+  $ module-rename -x foo bar
+
+=head1 LEGALESE
+
+Copyright 2005 by Mike Schilli, all rights reserved.
+This program is free software, you can redistribute it and/or
+modify it under the same terms as Perl itself.
+
+=head1 AUTHOR
+
+2005, Mike Schilli <cpan@perlmeister.com>

@@ -1,0 +1,24 @@
+######################################################################
+    Module::Rename 0.01
+######################################################################
+
+NAME
+    Module::Rename - Utility functions for renaming a module distribution
+
+SYNOPSIS
+        use Module::Rename;
+
+DESCRIPTION
+    Module::Rename blah blah blah.
+
+EXAMPLES
+      $ perl -MModule::Rename -le 'print $foo'
+
+LEGALESE
+    Copyright 2005 by Mike Schilli, all rights reserved. This program is
+    free software, you can redistribute it and/or modify it under the same
+    terms as Perl itself.
+
+AUTHOR
+    2005, Mike Schilli <cpan@perlmeister.com>
+

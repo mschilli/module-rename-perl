@@ -1,0 +1,23 @@
+#!/usr/bin/perl
+    # Available at http://perlmeister.com/scripts
+use ModDevUtils;
+use Test::Harness;
+
+ModDevUtils::release() or exit 0;
+
+my $admdir = ".";
+$admdir = "adm" if -d "lib";
+runtests("$admdir/podok");
+
+my $ball = ModDevUtils::tarball_name();
+
+my $USER       = "XXX";
+my $HOST       = "YYY";
+my $TMPDIR     = "/home/$USER/tmp";
+my $RELSCRIPT  = "ZZZ";
+
+    # Transfer tarball somewhere ...
+print "Copying $ball to $HOST ...\n";
+system("scp $ball $USER\@$HOST:$TMPDIR");
+print "Releasing it on $HOST ...\n";
+system("ssh -l $USER $HOST $RELSCRIPT $ball\n");
