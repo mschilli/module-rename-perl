@@ -31,6 +31,12 @@ sub new {
     ($self->{look_for}   = $self->{name_old}) =~ s#::#/#g;
     ($self->{replace_by} = $self->{name_new}) =~ s#::#/#g;
 
+    ($self->{pmfile}  = $self->{name_old}) =~ s#.*::##g;
+     $self->{pmfile} .= ".pm";
+
+    ($self->{new_pmfile}  = $self->{name_new}) =~ s#.*::##g;
+     $self->{new_pmfile} .= ".pm";
+
     bless $self, $class;
 }
 
@@ -52,13 +58,24 @@ sub find_and_rename {
             return;
         }
         return unless -f $_;
-        push @files, $File::Find::name if $File::Find::name =~ 
-                      /$self->{look_for}/;
+        push @files, $File::Find::name if 
+                $File::Find::name =~ /$self->{look_for}/ or
+                $_ eq $self->{pmfile};
         $self->file_process($_, $File::Find::name);
     }, $start_dir);
     
     for my $file (@files) {
-        (my $newfile = $file) =~ s/$self->{look_for}/$self->{replace_by}/;
+
+        my $newfile = $file;
+
+        if($file =~ /$self->{look_for}/) {
+            $newfile =~ s/$self->{look_for}/$self->{replace_by}/;
+        } else {
+                # We found a module file outside the regular
+                # dir structure, just replace it within this directory
+            $newfile =~ s/$self->{pmfile}/$self->{new_pmfile}/;
+        }
+
         INFO "mv $file $newfile";
         my $dir = dirname($newfile);
         mkd $dir unless -d $dir;
@@ -122,8 +139,9 @@ sub file_process {
 
     open FILE, "<$file" or LOGDIE "Can't open $file ($!)";
     while(<FILE>) {
-        $self->{line} = $.;
+        DEBUG "Looking for /$self->{name_old}/";
         s/($self->{name_old})\b/$self->rep($1,$self->{name_new})/ge;
+        DEBUG "Looking for /$self->{look_for}/";
         s/($self->{look_for})\b/$self->rep($1,$self->{replace_by})/ge;
         $out .= $_;
     }

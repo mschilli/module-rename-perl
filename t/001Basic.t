@@ -12,7 +12,7 @@ use Log::Log4perl qw(:easy);
 use File::Basename;
 use File::Find;
 
-Log::Log4perl->easy_init({level => $DEBUG, file => 'STDOUT'});
+Log::Log4perl->easy_init({level => $ERROR, file => 'STDOUT'});
 
 BEGIN { use_ok('Module::Rename') };
 
@@ -41,9 +41,13 @@ like($data, qr/Ka::Boom/, "Content renamed");
 
 $data = slurp "tmp/Ka-Boom/Makefile.PL";
 unlike($data, qr/Foo::Bar/, "Content renamed");
+unlike($data, qr/Foo\/Bar/, "Content renamed");
 
 ok(-d   "tmp/Ka-Boom/eg",      "Leave previously empty dir untouched");
 ok(! -d "tmp/Ka-Boom/lib/Foo", "Sweep away now-empty subdir");
+
+ok(! -f "tmp/Ka-Boom/Bar.pm", "File renamed");
+ok(-f "tmp/Ka-Boom/Boom.pm", "File renamed");
 
 rmf "tmp";
 
