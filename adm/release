@@ -1,23 +1,18 @@
 #!/usr/bin/perl
+###########################################
+# release -- Release this module
+# Mike Schilli, 2005 (cpan@perlmeister.com)
+###########################################
+use warnings;
+use strict;
+
     # Available at http://perlmeister.com/scripts
 use ModDevUtils;
-use Test::Harness;
 
 ModDevUtils::release() or exit 0;
 
-my $admdir = ".";
-$admdir = "adm" if -d "lib";
-runtests("$admdir/podok");
-
 my $ball = ModDevUtils::tarball_name();
-
-my $USER       = "XXX";
-my $HOST       = "YYY";
-my $TMPDIR     = "/home/$USER/tmp";
-my $RELSCRIPT  = "ZZZ";
-
-    # Transfer tarball somewhere ...
-print "Copying $ball to $HOST ...\n";
-system("scp $ball $USER\@$HOST:$TMPDIR");
-print "Releasing it on $HOST ...\n";
-system("ssh -l $USER $HOST $RELSCRIPT $ball\n");
+print "Copying $ball to perlmeister.com ...\n";
+system("scp $ball perlmeis\@sprite.netnation.com:/home/perlmeis/tmp");
+print "Releasing it on perlmeister.com ...\n";
+system("ssh -l perlmeis sprite.netnation.com bin/rel $ball\n");
