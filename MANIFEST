@@ -5,6 +5,7 @@ lib/Module/Rename.pm
 Makefile.PL
 MANIFEST			This list of files
 MANIFEST.SKIP
+META.yml			Module meta-data (added by MakeMaker)
 README
 t/001Basic.t
 t/sandbox/Foo-Bar/Changes
@@ -13,4 +14,3 @@ t/sandbox/Foo-Bar/Makefile.PL
 t/sandbox/Foo-Bar/MANIFEST.SKIP
 t/sandbox/Foo-Bar/README
 t/sandbox/Foo-Bar/t/001Basic.t
-META.yml                                 Module meta-data (added by MakeMaker)

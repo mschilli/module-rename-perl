@@ -9,7 +9,7 @@ SYNOPSIS
         ########
         # Shell:
         ########
-        $ module_rename Old::Name New::Name Old-Name-Distro
+        $ module-rename Old::Name New::Name Old-Name-Distro
 
         #######
         # Perl:
@@ -67,7 +67,7 @@ DESCRIPTION
         is in there).
 
 API
-    "my $renamer = Module::Rename-"new(...);>
+    "my $renamer = Module::Rename->new(...)"
         The renamer's constructor takes the following parameters:
 
         "name_old"
@@ -100,7 +100,7 @@ API
             be deleted after all renaming and restructuring is done.
             Defaults to true.
 
-    "$renamer-"find_and_rename($start_dir)>
+    "$renamer->find_and_rename($start_dir)"
         Start searching and replacing in $start_dir and recurse into it.
 
 LEGALESE
