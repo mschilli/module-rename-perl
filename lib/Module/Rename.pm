@@ -221,7 +221,7 @@ there).
 
 =over 4
 
-=item C<my $renamer = Module::Rename->new(...);>
+=item C<my $renamer = Module::Rename-E<gt>new(...)>
 
 The renamer's constructor takes the following parameters:
 
@@ -263,7 +263,7 @@ all renaming and restructuring is done. Defaults to true.
 
 =back
 
-=item C<$renamer->find_and_rename($start_dir)>
+=item C<$renamer-E<gt>find_and_rename($start_dir)>
 
 Start searching and replacing in C<$start_dir> and recurse into it.
 
