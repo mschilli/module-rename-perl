@@ -67,7 +67,7 @@ sub file_process {
     open FILE, "<$file" or LOGDIE "Can't open $file ($!)";
     while(<FILE>) {
         $self->{line} = $.;
-        s/\b($self->{name_old})\b/$self->rep($1)/ge;
+        s/($self->{name_old})\b/$self->rep($1)/ge;
         $out .= $_;
     }
     close FILE;

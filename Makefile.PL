@@ -6,6 +6,7 @@ use ExtUtils::MakeMaker;
 WriteMakefile(
     'NAME'         => 'Module::Rename',
     'VERSION_FROM' => 'lib/Module/Rename.pm', # finds $VERSION
+    'EXE_FILES'    => [qw(eg/module-rename)],
     'PREREQ_PM'    => {
         Log::Log4perl   => 0.47,
         Sysadm::Install => 0.14,
