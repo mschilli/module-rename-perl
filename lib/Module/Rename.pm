@@ -44,7 +44,7 @@ sub find_and_rename {
 
     find(sub {
         if(-d and $self->dir_empty($_)) {
-            WARN "$File::Find::name is an empty subdir";
+            INFO "$File::Find::name is an empty subdir";
             $empty_subdirs{$File::Find::name}++;
         }
         if(-d and exists $self->{dir_exclude_hash}->{$_}) {
@@ -68,7 +68,7 @@ sub find_and_rename {
     (my $dashed_replace_by = $self->{name_new}) =~ s#::#-#g;
 
         # Rename any top directory files like Foo-Bar-0.01
-    my @rename_candidates = ();
+    my @rename_candidates = ($start_dir);
     find(sub {
         if(/$dashed_look_for/) {
             push @rename_candidates, $File::Find::name;
@@ -78,6 +78,10 @@ sub find_and_rename {
         (my $newitem = $item) =~ s/$dashed_look_for/$dashed_replace_by/;
         mv $item, $newitem;
     }
+
+        # Even the start_dir could have to be modified.
+    $start_dir =~ s/$dashed_look_for/$dashed_replace_by/;
+
         # Update empty_subdirs with the latest name changes
     %empty_subdirs = map { s/$dashed_look_for/$dashed_replace_by/; $_; }
         %empty_subdirs;
@@ -87,7 +91,7 @@ sub find_and_rename {
     finddepth(sub { 
         if(-d and $self->dir_empty($_) and
            ! exists $empty_subdirs{$File::Find::name}) {
-            INFO "$File::Find::name is empty and can go away";
+            WARN "$File::Find::name is empty and can go away";
             rmf $_ if $self->{wipe_empty_subdirs};
             $File::Find::prune = 1;
         }
@@ -145,24 +149,119 @@ Module::Rename - Utility functions for renaming a module distribution
 
 =head1 SYNOPSIS
 
+    ########
+    # Shell:
+    ########
+    $ module_rename Old::Name New::Name Old-Name-Distro
+
+    #######
+    # Perl:
+    #######
     use Module::Rename;
+
+    my $ren = Module::Rename->new(
+        name_old           => "Old::Name",
+        name_new           => "New::Name",
+    );
+
+    $ren->find_and_rename($start_dir);
 
 =head1 DESCRIPTION
 
-Did you ever create a module distribution, only to realize later that
+Have you ever created a module distribution, only to realize later that
 the module hierarchary needed to be changed? All of a sudden, 
 C<Cool::Frobnicator> didn't sound cool anymore, but needed to be
-C<Util::Frobnicator>?
+C<Util::Frobnicator> instead?
 
-        name_old           => undef,
-        name_new           => undef,
-        dir_exclude        => ['blib'],
-        dir_ignore         => ['CVS'],
-        wipe_empty_subdirs => 1,
+Going through a module's distribution, changing all package names,
+variable names, and move the directories around can be a tedious task. 
+C<Module::Rename> comes with a script C<module-rename> which takes care of 
+all this:
 
-=head1 EXAMPLES
+    $ ls
+    Cool-Frobnicator-0.01/
 
-  $ module-rename Cool::Frobnicator Util::Frobnicator Cool-Frobnicator-0.01
+    $ module-rename Cool::Frobnicator Util::Frobnicator Cool-Frobnicator-0.01
+    Cool-Frobnicator-0.01/lib/Cool is empty and can go away.
+
+Done. The directory hierarchy has changed:
+
+    $ ls -R
+    Util-Frobnicator-0.01/
+    ...
+    Util-Frobnicator-0.01/lib/Util/Frobnicator.pm
+
+... and so has the content of all files:
+
+    $ grep "package" Util-Frobnicator-0.01/lib/Util/Frobnicator.pm
+    package Util::Frobnicator;
+
+=head2 Things to Keep in Mind
+
+=over 4
+
+=item *
+
+C<module-rename> will rename files and replace their content, so make
+sure that you have a backup copy in case something goes horribly wrong.
+
+=item *
+
+After changing the module hierarchy, some directories might be empty,
+like the C<lib/Cool> directory above. In this case, a warning will be issued:
+
+    Cool-Frobnicator-0.01/lib/Cool is empty and can go away.
+
+and the 'empty' directory gets deleted (even if a CVS subdirectory is in 
+there).
+
+=back
+
+=head1 API
+
+=over 4
+
+=item C<my $renamer = Module::Rename->new(...);>
+
+The renamer's constructor takes the following parameters:
+
+=over 4
+
+=item C<name_old>
+
+Old module name.
+
+=item C<name_new>
+
+New module name.
+
+=item C<dir_exclude>
+
+Reference to an array with directories to exclude from traversing.
+Preset to 
+
+    dir_exclude => ['blib']
+
+but can be overridden.
+
+=item C<dir_ignore>
+
+Reference to an array with entries to be ignored in 'empty' directories.
+Even with these entries being present, a directory will be considered
+empty and swept away.
+
+Preset to 
+
+        dir_ignore => ['CVS'],
+
+but can be overridden.
+
+=item C<wipe_empty_subdirs>
+
+If set to a true value, 'empty' (see above) subdirectories will be deleted after
+all renaming and restructuring is done. Defaults to true.
+
+=back
 
 =head1 LEGALESE
 
