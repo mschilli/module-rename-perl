@@ -9,7 +9,7 @@ use Sysadm::Install qw(:all);
 use Log::Log4perl qw(:easy);
 use File::Basename;
 
-our $VERSION = "0.01";
+our $VERSION = "0.02";
 
 ###########################################
 sub new {
@@ -28,6 +28,9 @@ sub new {
     $self->{dir_exclude_hash} = { map { $_ => 1 } @{$self->{dir_exclude}} };
     $self->{dir_ignore_hash}  = { map { $_ => 1 } @{$self->{dir_ignore}} };
 
+    ($self->{look_for}   = $self->{name_old}) =~ s#::#/#g;
+    ($self->{replace_by} = $self->{name_new}) =~ s#::#/#g;
+
     bless $self, $class;
 }
 
@@ -35,9 +38,6 @@ sub new {
 sub find_and_rename {
 ###########################################
     my($self, $start_dir) = @_;
-
-    (my $look_for   = $self->{name_old}) =~ s#::#/#g;
-    (my $replace_by = $self->{name_new}) =~ s#::#/#g;
 
     my @files = ();
     my %empty_subdirs = ();
@@ -52,12 +52,13 @@ sub find_and_rename {
             return;
         }
         return unless -f $_;
-        push @files, $File::Find::name if $File::Find::name =~ /$look_for/;
+        push @files, $File::Find::name if $File::Find::name =~ 
+                      /$self->{look_for}/;
         $self->file_process($_, $File::Find::name);
     }, $start_dir);
     
     for my $file (@files) {
-        (my $newfile = $file) =~ s/$look_for/$replace_by/;
+        (my $newfile = $file) =~ s/$self->{look_for}/$self->{replace_by}/;
         INFO "mv $file $newfile";
         my $dir = dirname($newfile);
         mkd $dir unless -d $dir;
@@ -122,7 +123,8 @@ sub file_process {
     open FILE, "<$file" or LOGDIE "Can't open $file ($!)";
     while(<FILE>) {
         $self->{line} = $.;
-        s/($self->{name_old})\b/$self->rep($1)/ge;
+        s/($self->{name_old})\b/$self->rep($1,$self->{name_new})/ge;
+        s/($self->{look_for})\b/$self->rep($1,$self->{replace_by})/ge;
         $out .= $_;
     }
     close FILE;
@@ -133,10 +135,10 @@ sub file_process {
 ###########################################
 sub rep {
 ###########################################
-    my($self, $found) = @_;
+    my($self, $found, $replace) = @_;
 
-    INFO "$File::Find::name ($.): $self->{name_old} => $self->{name_new}";
-    return $self->{name_new};
+    INFO "$File::Find::name ($.): $found => $replace";
+    return $replace;
 }
 
 1;

@@ -1,5 +1,5 @@
 ######################################################################
-    Module::Rename 0.01
+    Module::Rename 0.02
 ######################################################################
 
 NAME
@@ -9,7 +9,7 @@ SYNOPSIS
         ########
         # Shell:
         ########
-        $ module_rename Old::Name New::Name Old-Name-Distro
+        $ module-rename Old::Name New::Name Old-Name-Distro
 
         #######
         # Perl:
