@@ -152,7 +152,7 @@ Module::Rename - Utility functions for renaming a module distribution
     ########
     # Shell:
     ########
-    $ module_rename Old::Name New::Name Old-Name-Distro
+    $ module-rename Old::Name New::Name Old-Name-Distro
 
     #######
     # Perl:

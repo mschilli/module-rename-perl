@@ -9,7 +9,7 @@ SYNOPSIS
         ########
         # Shell:
         ########
-        $ module-rename Old::Name New::Name Old-Name-Distro
+        $ module_rename Old::Name New::Name Old-Name-Distro
 
         #######
         # Perl:
