@@ -263,6 +263,12 @@ all renaming and restructuring is done. Defaults to true.
 
 =back
 
+=item C<$renamer->find_and_rename($start_dir)>
+
+Start searching and replacing in C<$start_dir> and recurse into it.
+
+=back
+
 =head1 LEGALESE
 
 Copyright 2005 by Mike Schilli, all rights reserved.

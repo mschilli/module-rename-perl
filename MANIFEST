@@ -13,3 +13,4 @@ t/sandbox/Foo-Bar/Makefile.PL
 t/sandbox/Foo-Bar/MANIFEST.SKIP
 t/sandbox/Foo-Bar/README
 t/sandbox/Foo-Bar/t/001Basic.t
+META.yml                                 Module meta-data (added by MakeMaker)
