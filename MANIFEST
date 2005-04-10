@@ -11,7 +11,7 @@ t/001Basic.t
 t/sandbox/Foo-Bar/Bar.pm
 t/sandbox/Foo-Bar/Changes
 t/sandbox/Foo-Bar/lib/Foo/Bar.pm
-t/sandbox/Foo-Bar/eg
+t/sandbox/Foo-Bar/eg/
 t/sandbox/Foo-Bar/Makefile.PL
 t/sandbox/Foo-Bar/MANIFEST.SKIP
 t/sandbox/Foo-Bar/README
