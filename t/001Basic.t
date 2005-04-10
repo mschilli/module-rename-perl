@@ -24,6 +24,8 @@ cd $sbx;
 rmf "tmp" if -d "tmp";
 cp_r("Foo-Bar", "tmp");
 
+rmf "tmp/Foo-Bar/eg/remove_me";
+
 my $ren = Module::Rename->new(
     name_old           => "Foo::Bar",
     name_new           => "Ka::Boom",
