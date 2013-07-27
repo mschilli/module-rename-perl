@@ -12,7 +12,7 @@ use Log::Log4perl qw(:easy);
 use Getopt::Std;
 use File::Basename;
 
-getopts("vh", \my %o);
+getopts("vgh", \my %o);
 
 Log::Log4perl->easy_init({
   level  => $WARN,
@@ -33,6 +33,7 @@ my $ren = Module::Rename->new(
     name_old           => $old,
     name_new           => $new,
     wipe_empty_subdirs => 1,
+    use_git            => $o{g},
 );
 
 $ren->find_and_rename($dir || ".");
@@ -109,6 +110,10 @@ Verbose mode.
 =item B<-h>
 
 Show the script's version and manual page.
+
+=item B<-g>
+
+Move files using "git mv" instead of "mv".
 
 =back
 

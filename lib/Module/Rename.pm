@@ -9,7 +9,7 @@ use Sysadm::Install qw(:all);
 use Log::Log4perl qw(:easy);
 use File::Basename;
 
-our $VERSION = "0.03";
+our $VERSION = "0.04";
 
 ###########################################
 sub new {
@@ -22,6 +22,7 @@ sub new {
         dir_exclude        => ['blib'],
         dir_ignore         => ['CVS'],
         wipe_empty_subdirs => 0,
+        use_git            => 0,
         %options,
     };
 
@@ -38,6 +39,20 @@ sub new {
      $self->{new_pmfile} .= ".pm";
 
     bless $self, $class;
+}
+
+###########################################
+sub move {
+###########################################
+    my($self, $old_path, $new_path) = @_;
+
+    if( $old_path ne $new_path ) {
+        if ($self->{use_git}) {
+            system("git", "mv", $old_path, $new_path);
+        } else {
+            mv $old_path, $new_path;
+        }
+    }
 }
 
 ###########################################
@@ -79,7 +94,7 @@ sub find_and_rename {
         INFO "mv $file $newfile";
         my $dir = dirname($newfile);
         mkd $dir unless -d $dir;
-        mv $file, $newfile;
+        $self->move($file, $newfile);
     }
 
     (my $dashed_look_for   = $self->{name_old}) =~ s#::#-#g;
@@ -94,7 +109,7 @@ sub find_and_rename {
     }, $start_dir);
     for my $item (@rename_candidates) {
         (my $newitem = $item) =~ s/$dashed_look_for/$dashed_replace_by/;
-        mv $item, $newitem;
+        $self->move($item, $newitem);
     }
 
         # Even the start_dir could have to be modified.
