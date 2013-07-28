@@ -6,3 +6,6 @@ CVS
 docs
 MANIFEST.bak
 adm/release
+.git
+MYMETA.json
+MYMETA.yml
