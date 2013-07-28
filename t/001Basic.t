@@ -11,14 +11,14 @@ use Sysadm::Install qw(:all);
 use Log::Log4perl qw(:easy);
 use File::Basename;
 use File::Find;
+use FindBin qw( $Bin );
 
 Log::Log4perl->easy_init({level => $ERROR, file => 'STDOUT'});
 
 BEGIN { use_ok('Module::Rename') };
 
-my $sbx = "sandbox";
-$sbx = "t/$sbx" unless -d $sbx;
-$sbx = "../t/$sbx" unless -d $sbx;
+my $sbx = "$Bin/sandbox";
+require "$sbx/utils/Utils.pm";
 
 cd $sbx;
 rmf "tmp" if -d "tmp";
@@ -52,22 +52,3 @@ ok(! -f "tmp/Ka-Boom/Bar.pm", "File renamed");
 ok(-f "tmp/Ka-Boom/Boom.pm", "File renamed");
 
 rmf "tmp";
-
-######################################################################
-sub cp_r {
-######################################################################
-    my($from, $to) = @_;
-
-    my @files = ();
-
-    find(sub {
-        push @files, $File::Find::name if -f;
-    }, $from);
-
-    for my $file (@files) {
-        my $newfile = "$to/$file";
-        my $dir = dirname($newfile);
-        mkd $dir unless -d $dir;
-        cp $file, $newfile;
-    }
-}

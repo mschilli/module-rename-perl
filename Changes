@@ -3,7 +3,8 @@ Revision history for Perl extension Module::Rename
 
 0.04  (not yet released)
    (ms) [rt.cpan.org #87172] Applied changes by Jim Cochrane to add a -g 
-        switch, which uses "git mv" instead of mv.
+        switch, which uses "git mv" instead of mv. Added various fixes and 
+        test cases.
 
 0.03  2005/04/09
    (ms) Added sandbox/eg to MANIFEST to fix installation problem
