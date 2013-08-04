@@ -36,6 +36,7 @@ sub new {
         push @{ $self->{dir_exclude} }, ".git";
     }
 
+    $self->{name_old} = '\b' . $self->{name_old} . '\b';
     $self->{dir_exclude_hash} = { map { $_ => 1 } @{$self->{dir_exclude}} };
     $self->{dir_ignore_hash}  = { map { $_ => 1 } @{$self->{dir_ignore}} };
 
