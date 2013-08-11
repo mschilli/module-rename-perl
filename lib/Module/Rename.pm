@@ -11,7 +11,7 @@ use Sysadm::Install qw(:all);
 use Log::Log4perl qw(:easy);
 use File::Spec::Functions qw( abs2rel splitdir );
 
-our $VERSION = "0.04";
+our $VERSION = "0.05";
 
 ###########################################
 sub new {
@@ -41,6 +41,8 @@ sub new {
 
     ($self->{look_for}   = $self->{name_old}) =~ s#::#/#g;
     ($self->{replace_by} = $self->{name_new}) =~ s#::#/#g;
+
+    DEBUG "look_for: $self->{look_for} replace_by: $self->{replace_by}";
 
     ($self->{pmfile}  = $self->{name_old}) =~ s#.*::##g;
      $self->{pmfile} .= ".pm";
@@ -121,8 +123,10 @@ sub find_and_rename {
     for my $file (@files) {
 
         my $newfile = $file;
+        ( my $file_no_suffix = $file ) =~ s/\.[^\.]+$//;
 
-        if($file =~ /$self->{look_for}/) {
+        DEBUG "Matching $file_no_suffix against $self->{look_for}";
+        if($file_no_suffix =~ /$self->{look_for}$/) {
             $newfile =~ s/$self->{look_for}/$self->{replace_by}/;
         } else {
                 # We found a module file outside the regular

@@ -9,6 +9,7 @@ META.yml			Module meta-data (added by MakeMaker)
 README
 t/001Basic.t
 t/002Git.t
+t/003RenamFix.t
 t/sandbox/Foo-Bar/Bar.pm
 t/sandbox/Foo-Bar/Changes
 t/sandbox/Foo-Bar/eg/remove_me
@@ -17,4 +18,6 @@ t/sandbox/Foo-Bar/Makefile.PL
 t/sandbox/Foo-Bar/MANIFEST.SKIP
 t/sandbox/Foo-Bar/README
 t/sandbox/Foo-Bar/t/001Basic.t
+t/sandbox/NowOrLater/Core/Task.pm
+t/sandbox/NowOrLater/Core/TaskState.pm
 t/sandbox/utils/Utils.pm
