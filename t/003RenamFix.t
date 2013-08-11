@@ -6,16 +6,20 @@
 use warnings;
 use strict;
 
-use Test::More qw(no_plan);
+use Test::More;
 use Sysadm::Install qw(:all);
 use Log::Log4perl qw(:easy);
 use File::Basename;
 use File::Find;
 use FindBin qw( $Bin );
 
+
 Log::Log4perl->easy_init({level => $ERROR, file => 'STDOUT'});
 
-BEGIN { use_ok('Module::Rename') };
+BEGIN { 
+    plan tests => 4;
+    use_ok('Module::Rename') 
+};
 
 my $sbx = "$Bin/sandbox";
 require "$sbx/utils/Utils.pm";
