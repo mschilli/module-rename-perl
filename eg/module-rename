@@ -12,14 +12,14 @@ use Log::Log4perl qw(:easy);
 use Getopt::Std;
 use File::Basename;
 
-getopts("vgh", \my %o);
+getopts("vght", \my %o);
 
 Log::Log4perl->easy_init({
-  level  => $WARN,
+  level  => $INFO,
   layout => "%m%n",
 });
 
-my  $VERSION = "0.01";
+my  $VERSION = "0.02";
 
 pod2usage({-message => basename($0) . " v$VERSION",
            -verbose => 2
@@ -34,6 +34,7 @@ my $ren = Module::Rename->new(
     name_new           => $new,
     wipe_empty_subdirs => 1,
     use_git            => $o{g},
+    trial_run          => $o{t},
 );
 
 $ren->find_and_rename($dir || ".");
@@ -46,7 +47,7 @@ __END__
 
 =head1 SYNOPSIS
 
-    $ module-rename Old::Name New::Name Old-Name-Distro-Dir
+    module-rename [-v|-g|-h|-t] Old::Name New::Name Old-Name-Distro-Dir
 
 =head1 DESCRIPTION
 
@@ -109,11 +110,16 @@ Verbose mode.
 
 =item B<-h>
 
-Show the script's version and manual page.
+Show this manual page.
 
 =item B<-g>
 
 Move files using "git mv" instead of "mv".
+
+=item B<-t>
+
+Trial run - Don't change anything, just display actions that would have
+occurred without the -t option.
 
 =back
 

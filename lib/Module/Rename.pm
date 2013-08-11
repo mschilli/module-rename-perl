@@ -25,8 +25,13 @@ sub new {
         dir_ignore         => ['CVS'],
         wipe_empty_subdirs => 0,
         use_git            => 0,
+        trial_run          => 0,
         %options,
     };
+
+    if( $self->{trial_run} ) {
+        Sysadm::Install::dry_run( 1 );
+    }
 
     if( $self->{use_git} ) {
         $self->{ git_bin } = bin_find( "git" );
@@ -85,6 +90,10 @@ sub move {
               # make sure we launch the git command inside the git workspace
             my $common = $self->longest_common_path( $old_path, $new_path );
             cd $common;
+            if ($self->{trial_run}) {
+                print "[in " . getcwd() . ":]\n";
+            }
+
             tap("git", "mv", 
                abs2rel( $old_path, $common ),
                abs2rel( $new_path, $common ),
@@ -119,7 +128,7 @@ sub find_and_rename {
                 $_ eq $self->{pmfile};
         $self->file_process($_, $File::Find::name);
     }, $start_dir);
-    
+
     for my $file (@files) {
 
         my $newfile = $file;
@@ -136,7 +145,9 @@ sub find_and_rename {
 
         INFO "mv $file $newfile";
         my $dir = dirname($newfile);
-        mkd $dir unless -d $dir;
+        if(! $self->{trial_run}) {
+            mkd $dir unless -d $dir;
+        }
         $self->move($file, $newfile);
     }
 
@@ -162,7 +173,7 @@ sub find_and_rename {
     %empty_subdirs = map { s/$dashed_look_for/$dashed_replace_by/; $_; }
         %empty_subdirs;
 
-    if( $self->{wipe_empty_subdirs} ) {
+    if( $self->{wipe_empty_subdirs} and !$self->{trial_run} ) {
         my @dirs = ();
             # Delete all empty dirs
         find(sub { 
@@ -205,16 +216,29 @@ sub file_process {
     my $out = "";
 
     open FILE, "<$file" or LOGDIE "Can't open $file ($!)";
-    while(<FILE>) {
+    my $line_num = 0;
+    my $first_diff = 1;
+    while(my $line = <FILE>) {
+        ++$line_num;
         DEBUG "Looking for /$self->{name_old}/";
-        s/($self->{name_old})\b/$self->rep($1,$self->{name_new})/ge;
+        my $orig_line = $line;
+        $line =~ s/($self->{name_old})\b/$self->rep($1,$self->{name_new})/ge;
         DEBUG "Looking for /$self->{look_for}/";
-        s/($self->{look_for})\b/$self->rep($1,$self->{replace_by})/ge;
-        $out .= $_;
+        $line =~ s/($self->{look_for})\b/$self->rep($1,$self->{replace_by})/ge;
+        if ($self->{trial_run} and $line ne $orig_line) {
+            if ($first_diff) {
+                print "$file:\n";
+                $first_diff = 0;
+            }
+            print "${line_num}c${line_num}\n- $orig_line+ $line";
+        }
+        $out .= $line;
     }
     close FILE;
 
-    blurt $out, $file;
+    if (not $self->{trial_run}) {
+        blurt $out, $file;
+    }
 }
 
 ###########################################
@@ -347,6 +371,15 @@ but can be overridden.
 
 If set to a true value, 'empty' (see above) subdirectories will be deleted after
 all renaming and restructuring is done. Defaults to true.
+
+=item C<use_git>
+
+Perform a 'git mv' instead of the default, 'mv'.
+
+=item C<trial_run>
+
+Perform a "trial run" - report, but don't actually execute, the changes
+resulting from the Rename object configuration.
 
 =back
 
