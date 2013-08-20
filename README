@@ -1,5 +1,5 @@
 ######################################################################
-    Module::Rename 0.05
+    Module::Rename 0.06
 ######################################################################
 
 NAME
@@ -99,6 +99,13 @@ API
             If set to a true value, 'empty' (see above) subdirectories will
             be deleted after all renaming and restructuring is done.
             Defaults to true.
+
+        "use_git"
+            Perform a 'git mv' instead of the default, 'mv'.
+
+        "trial_run"
+            Perform a "trial run" - report, but don't actually execute, the
+            changes resulting from the Rename object configuration.
 
     "$renamer->find_and_rename($start_dir)"
         Start searching and replacing in $start_dir and recurse into it.

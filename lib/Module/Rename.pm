@@ -10,8 +10,9 @@ use File::Spec qw( splitdir );
 use Sysadm::Install qw(:all);
 use Log::Log4perl qw(:easy);
 use File::Spec::Functions qw( abs2rel splitdir );
+use Cwd;
 
-our $VERSION = "0.05";
+our $VERSION = "0.06";
 
 ###########################################
 sub new {
@@ -91,7 +92,7 @@ sub move {
             my $common = $self->longest_common_path( $old_path, $new_path );
             cd $common;
             if ($self->{trial_run}) {
-                print "[in " . getcwd() . ":]\n";
+                INFO "[in " . getcwd() . ":]";
             }
 
             tap("git", "mv", 
@@ -143,7 +144,6 @@ sub find_and_rename {
             $newfile =~ s/$self->{pmfile}/$self->{new_pmfile}/;
         }
 
-        INFO "mv $file $newfile";
         my $dir = dirname($newfile);
         if(! $self->{trial_run}) {
             mkd $dir unless -d $dir;
@@ -227,10 +227,10 @@ sub file_process {
         $line =~ s/($self->{look_for})\b/$self->rep($1,$self->{replace_by})/ge;
         if ($self->{trial_run} and $line ne $orig_line) {
             if ($first_diff) {
-                print "$file:\n";
+                INFO "$file:";
                 $first_diff = 0;
             }
-            print "${line_num}c${line_num}\n- $orig_line+ $line";
+            INFO "${line_num}c${line_num}\n- $orig_line+ $line";
         }
         $out .= $line;
     }

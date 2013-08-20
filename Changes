@@ -1,5 +1,8 @@
 Revision history for Perl module Module::Rename
 
+0.06 2013-08-19 ms
+   - [rt.cpan.org #87172] More logging changes suggested by Jim Cochrane.
+
 0.05 2013-08-10 ms
     - [rt.cpan.org #87172] Fixed rename problem caused by broad filename
       match, reported by Jim Cochrane. Added a test case.
