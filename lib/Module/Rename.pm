@@ -6,7 +6,7 @@ use strict;
 use warnings;
 use File::Find;
 use File::Basename;
-use File::Spec qw( splitdir );
+use File::Spec;
 use Sysadm::Install qw(:all);
 use Log::Log4perl qw(:easy);
 use File::Spec::Functions qw( abs2rel splitdir );
